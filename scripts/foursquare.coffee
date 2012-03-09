@@ -4,7 +4,7 @@ module.exports = (robot) ->
     console.log "The matches:", msg.match
 
     query = encodeURIComponent(msg.match[1])
-    address = encodeURIComponent(msg.match[2])
+    address = encodeURIComponent(msg.match[3])
     
 
     url = "http://maps.googleapis.com/maps/api/geocode/json?address=#{address}&sensor=false"
