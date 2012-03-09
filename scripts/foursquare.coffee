@@ -6,6 +6,7 @@ module.exports = (robot) ->
     msg
       .http("http://maps.googleapis.com/maps/api/geocode/json?address=#{address}&sensor=false")
       .get() (err, res, body) ->
+        console.log "RESPONSE FROM GOOGLE: " + body
         geocodeData = JSON.parse(body)
 
         lat = geocodeData.results[0].geometry.location.lat
