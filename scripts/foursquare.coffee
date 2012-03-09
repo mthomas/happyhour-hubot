@@ -1,11 +1,14 @@
 module.exports = (robot) ->
-  robot.respond /(.*) near (.*)/i, (msg) ->
+  robot.respond /^(.*) near (.*)$/i, (msg) ->
     address = encodeURIComponent(msg.match[1])
     query = encodeURIComponent(msg.match[0])
 
+    url = "http://maps.googleapis.com/maps/api/geocode/json?address=#{address}&sensor=false"
+
     msg
-      .http("http://maps.googleapis.com/maps/api/geocode/json?address=#{address}&sensor=false")
+      .http(url)
       .get() (err, res, body) ->
+        console.log "Google URL: " + url
         console.log "RESPONSE FROM GOOGLE: " + body
         geocodeData = JSON.parse(body)
 
