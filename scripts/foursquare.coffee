@@ -16,8 +16,14 @@ module.exports = (robot) ->
         console.log "RESPONSE FROM GOOGLE: " + body
         geocodeData = JSON.parse(body)
 
-        lat = geocodeData.results[0].geometry.location.lat
-        lng = geocodeData.results[0].geometry.location.lng
+        location = geocodeData?.results?[0]?.geometry?.location
+
+        if not location?
+          msg.send "Sorry, I can't find #{msg.match[2]}"
+          return
+
+        lat = location.lat
+        lng = location.lng
 
         url = "https://api.foursquare.com/v2/venues/search?ll=#{lat},#{lng}&radius=1000&query=#{query}&client_id=#{process.env.HUBOT_FSQ_CLIENT_ID}&client_secret=#{process.env.HUBOT_FSQ_CLIENT_SECRET}&v=20120308"
 
@@ -26,9 +32,13 @@ module.exports = (robot) ->
           .get() (err, res, body) ->
             fsqData = JSON.parse(body)
 
-            venues = fsqData.response.venues
+            venues = fsqData?.response?.venues
+
+            if not venues?
+              msg.send "Sorry, I can't find any #{msg.match[1]} near #{msg.match[2]}"
+              return
 
             for venue in venues
-              msg.send venue.name
+              msg.send "#{venue.name}: #{venue.url}"
 
 
