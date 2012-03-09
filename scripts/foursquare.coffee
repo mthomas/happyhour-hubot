@@ -1,5 +1,5 @@
 module.exports = (robot) ->
-  robot.respond /^(.*) near (.*)$/i, (msg) ->
+  robot.hear /^(.*) near (.*)$/i, (msg) ->
     address = encodeURIComponent(msg.match[1])
     query = encodeURIComponent(msg.match[0])
 
