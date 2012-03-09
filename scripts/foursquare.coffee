@@ -1,5 +1,5 @@
 module.exports = (robot) ->
-  robot.hear /^(.*) near (.*)$/i, (msg) ->
+  robot.hear /^find (.*) (near|in) (.*)$/i, (msg) ->
 
     console.log "The matches:", msg.match
 
@@ -39,6 +39,6 @@ module.exports = (robot) ->
               return
 
             for venue in venues
-              msg.send "#{venue.name}: #{venue.url}"
+              msg.send "#{venue.name}: #{venue.url or 'http://www.foursquare.com/v/' + venue.id}"
 
 
