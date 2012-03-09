@@ -6,7 +6,7 @@ module.exports = (robot) ->
     query = encodeURIComponent(msg.match[1])
     address = encodeURIComponent(msg.match[3])
       
-    url = "http://api.yelp.com/business_review_search?term=#{query}&location=#{address}=#{process.env.HUBOT_YWSID}"
+    url = "http://api.yelp.com/business_review_search?term=#{query}&location=#{address}&ywsid=#{process.env.HUBOT_YWSID}"
 
     console.log "URL for yelp: " + url
 
@@ -20,7 +20,7 @@ module.exports = (robot) ->
       if not results?
         msg.send "No results for #{msg.match[1]}"
         return
-        
+
       for r in results
         msg.send "#{r.name}: #{r.url}"
 
