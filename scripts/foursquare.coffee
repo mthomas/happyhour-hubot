@@ -1,10 +1,11 @@
 module.exports = (robot) ->
   robot.hear /^(.*) near (.*)$/i, (msg) ->
 
-    console.log "The matches:", msg
+    console.log "The matches:", msg.match
 
-    address = encodeURIComponent(msg.match[1])
-    query = encodeURIComponent(msg.match[0])
+    query = encodeURIComponent(msg.match[1])
+    address = encodeURIComponent(msg.match[2])
+    
 
     url = "http://maps.googleapis.com/maps/api/geocode/json?address=#{address}&sensor=false"
 
