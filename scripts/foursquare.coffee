@@ -5,40 +5,49 @@ module.exports = (robot) ->
 
     query = encodeURIComponent(msg.match[1])
     address = encodeURIComponent(msg.match[3])
-    
+      
+    url = "http://api.yelp.com/business_review_search?term=#{query}&location=#{address}=#{process.env.HUBOT_YWSID}"
 
-    url = "http://maps.googleapis.com/maps/api/geocode/json?address=#{address}&sensor=false"
+    msg.http(url).get() (err, res, body) ->
+      data = JSON.parse(body)
 
-    msg
-      .http(url)
-      .get() (err, res, body) ->
-        console.log "Google URL: " + url
-        console.log "RESPONSE FROM GOOGLE: " + body
-        geocodeData = JSON.parse(body)
+      results = body.businesses
 
-        location = geocodeData?.results?[0]?.geometry?.location
+      for r in results
+        msg.send "#{r.name}: #{r.url}"
 
-        if not location?
-          msg.send "Sorry, I can't find #{msg.match[2]}"
-          return
+    # url = "http://maps.googleapis.com/maps/api/geocode/json?address=#{address}&sensor=false"
 
-        lat = location.lat
-        lng = location.lng
+    # msg
+    #   .http(url)
+    #   .get() (err, res, body) ->
+    #     console.log "Google URL: " + url
+    #     console.log "RESPONSE FROM GOOGLE: " + body
+    #     geocodeData = JSON.parse(body)
 
-        url = "https://api.foursquare.com/v2/venues/search?ll=#{lat},#{lng}&radius=1000&query=#{query}&client_id=#{process.env.HUBOT_FSQ_CLIENT_ID}&client_secret=#{process.env.HUBOT_FSQ_CLIENT_SECRET}&v=20120308"
+    #     location = geocodeData?.results?[0]?.geometry?.location
 
-        msg
-          .http(url)
-          .get() (err, res, body) ->
-            fsqData = JSON.parse(body)
+    #     if not location?
+    #       msg.send "Sorry, I can't find #{msg.match[2]}"
+    #       return
 
-            venues = fsqData?.response?.venues
+    #     lat = location.lat
+    #     lng = location.lng
 
-            if not venues?
-              msg.send "Sorry, I can't find any #{msg.match[1]} near #{msg.match[2]}"
-              return
+        # url = "https://api.foursquare.com/v2/venues/search?ll=#{lat},#{lng}&radius=1000&query=#{query}&client_id=#{process.env.HUBOT_FSQ_CLIENT_ID}&client_secret=#{process.env.HUBOT_FSQ_CLIENT_SECRET}&v=20120308"
 
-            for venue in venues
-              msg.send "#{venue.name}: #{venue.url or 'http://www.foursquare.com/v/' + venue.id}"
+        # msg
+        #   .http(url)
+        #   .get() (err, res, body) ->
+        #     fsqData = JSON.parse(body)
+
+        #     venues = fsqData?.response?.venues
+
+        #     if not venues?
+        #       msg.send "Sorry, I can't find any #{msg.match[1]} near #{msg.match[2]}"
+        #       return
+
+        #     for venue in venues
+        #       msg.send "#{venue.name}: #{venue.url or 'http://www.foursquare.com/v/' + venue.id}"
 
 
